@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Bluetooth_HC05</string>
+    <string name="button_search">Search</string>
+    <string name="textview_empty">Notthing here</string>
+    <string name="searching_devices">Searching for devices...</string>
+    <string name="error">Error</string>
+    <string name="enabling_blt">Enabling Bluetooth</string>
+    <string name="failed_to_search">Failed to search Devices</string>
+    <string name="try_again">Try again</string>
+    <string name="none">None</string>
+    <string name="failed_to_enable_bluetooth">Failed to enable Bluetooth</string>
+</resources>
