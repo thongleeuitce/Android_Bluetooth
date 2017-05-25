@@ -32,6 +32,7 @@ public class Bluetooth {
 
     private boolean connected=false;
     private CommunicationCallback communicationCallback=null;
+
     private DiscoveryCallback discoveryCallback=null;
 
     private Activity activity;
@@ -41,9 +42,8 @@ public class Bluetooth {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
 
-    public void enableBluetooth() {
-        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLT);
+    public DiscoveryCallback getDiscoveryCallback() {
+        return discoveryCallback;
     }
     public BluetoothAdapter getBluetoothAdapter() {
         return bluetoothAdapter;
@@ -55,7 +55,10 @@ public class Bluetooth {
             }
         }
     }
-
+    public void enableBluetooth() {
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLT);
+    }
     public void connectToAddress(String address) {
         BluetoothDevice device = bluetoothAdapter.getRemoteDevice(address);
         new ConnectThread(device).start();
@@ -167,7 +170,7 @@ public class Bluetooth {
         return device;
     }
 
-    public Boolean scanDevices(){
+    public Boolean scanDevices(BroadcastReceiver mReceiverScan){
         IntentFilter filter = new IntentFilter();
 
         filter.addAction(BluetoothDevice.ACTION_FOUND);
@@ -202,32 +205,33 @@ public class Bluetooth {
         }
     }
 
-    private BroadcastReceiver mReceiverScan = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-
-            switch (action) {
-                case BluetoothAdapter.ACTION_STATE_CHANGED:
-                    final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-                    if (state == BluetoothAdapter.STATE_OFF) {
-                        if (discoveryCallback != null)
-                            discoveryCallback.onError("Bluetooth turned off");
-                    }
-                    break;
-                case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
-                    context.unregisterReceiver(mReceiverScan);
-                    if (discoveryCallback != null)
-                        discoveryCallback.onFinish();
-                    break;
-                case BluetoothDevice.ACTION_FOUND:
-                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    if (discoveryCallback != null)
-                        discoveryCallback.onDevice(device);
-                    break;
-            }
-        }
-    };
+//    private BroadcastReceiver mReceiverScan = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//
+//            switch (action) {
+//                case BluetoothAdapter.ACTION_STATE_CHANGED:
+//                    final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+//                    if (state == BluetoothAdapter.STATE_OFF) {
+//                        if (discoveryCallback != null)
+//                            discoveryCallback.onError("Bluetooth turned off");
+//                    }
+//                    break;
+//                case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
+//                    context.unregisterReceiver(mReceiverScan);
+//                    if (discoveryCallback != null)
+//                        discoveryCallback.onFinish();
+//                    break;
+//                case BluetoothDevice.ACTION_FOUND:
+//                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//
+//                    if (discoveryCallback != null)
+//                        discoveryCallback.onDevice(device);
+//                    break;
+//            }
+//        }
+//    };
 
     private final BroadcastReceiver mPairReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
