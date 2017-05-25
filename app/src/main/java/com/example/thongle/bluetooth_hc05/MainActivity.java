@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         button_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ConnectActivity.class);
+                startActivity(intent);
                 if(bluetooth.getBluetoothAdapter().isEnabled())
                     searchDevices();
                 else
