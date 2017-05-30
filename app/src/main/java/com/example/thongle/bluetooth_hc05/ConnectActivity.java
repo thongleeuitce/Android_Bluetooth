@@ -89,7 +89,7 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
         effects.add(new Effect("effect 9", "8", "Tieu to", R.drawable.logo));
         effects.add(new Effect("effect 10", "9", "mi cay", R.drawable.logo));
 
-        adapter_effects = new AdapterEffect(effects, ConnectActivity.this, bluetooth, bluetoothDevice);
+        adapter_effects = new AdapterEffect(effects, ConnectActivity.this, bluetooth, bluetoothDevice, recyclerView_effect);
         recyclerView_effect.setAdapter(adapter_effects);
     }
 

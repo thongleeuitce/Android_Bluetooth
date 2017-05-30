@@ -18,20 +18,23 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.thongle.bluetooth_hc05.views.ProgressBarDeterminate;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_DEVICE = "extra_device";
     public static final String EXTRA_BLUETOOTH = "extra_ble";
 
     private Toolbar toolbar;
-    private ProgressBar progressBar_toolbar;
+    private ProgressBarDeterminate progressBar_toolbar;
     private Button button_search;
     private ListView listView_devices;
     private TextView textView_empty_devices;
-    private CoordinatorLayout coordinatorLayout;
+    private LinearLayout coordinatorLayout;
     private BluetoothDevicesAdapter bluetoothDevicesAdapter;
 
     private Bluetooth bluetooth;
@@ -41,9 +44,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout_main);
+        coordinatorLayout = (LinearLayout) findViewById(R.id.coordinator_layout_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        progressBar_toolbar = (ProgressBar) findViewById(R.id.prog_toolbar);
+        progressBar_toolbar = (ProgressBarDeterminate) findViewById(R.id.prog_toolbar);
         button_search = (Button) findViewById(R.id.btn_search);
         listView_devices = (ListView) findViewById(R.id.liv_devices);
         textView_empty_devices = (TextView) findViewById(R.id.txtv_nothing);

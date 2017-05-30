@@ -22,12 +22,14 @@ public class AdapterEffect extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private Activity mActivity;
     private Bluetooth bluetooth;
     private BluetoothDevice device;
+    private RecyclerViewAnimator recyclerViewAnimator;
 
-    public AdapterEffect(ArrayList<Effect> data, ConnectActivity activity, Bluetooth bluetooth, BluetoothDevice device) {
+    public AdapterEffect(ArrayList<Effect> data, ConnectActivity activity, Bluetooth bluetooth, BluetoothDevice device, RecyclerView recyclerView) {
         this.items = data;
         this.mActivity = activity;
         this.bluetooth = bluetooth;
         this.device = device;
+        recyclerViewAnimator = new RecyclerViewAnimator(recyclerView);
         this.mInflater = LayoutInflater.from(mActivity);
     }
 
@@ -74,6 +76,7 @@ public class AdapterEffect extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         messageViewHolder.textView_title.setText(model.getTitle());
         messageViewHolder.textView_code.setText("Code: " + model.getCode());
         messageViewHolder.textView_content.setText(model.getContent());
+        recyclerViewAnimator.onBindViewHolder(holder.itemView, position);
     }
 
     @Override
@@ -84,6 +87,7 @@ public class AdapterEffect extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootCategoryView = mInflater.inflate(R.layout.item_effect_view, parent, false);
+        recyclerViewAnimator.onCreateViewHolder(rootCategoryView);
         return new MessageViewHolder(rootCategoryView, this);
     }
 
