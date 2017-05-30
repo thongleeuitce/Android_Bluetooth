@@ -51,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         listView_devices = (ListView) findViewById(R.id.liv_devices);
         textView_empty_devices = (TextView) findViewById(R.id.txtv_nothing);
 
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+
         bluetooth = new Bluetooth(this);
         bluetoothDevicesAdapter = new BluetoothDevicesAdapter(this);
 //        setSupportActionBar(toolbar);

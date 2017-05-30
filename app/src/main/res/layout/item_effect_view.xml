@@ -47,8 +47,8 @@
                     android:layout_weight="1"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/textSize_16"/>
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/textSize_20"/>
 
                 <TextView
                     android:id="@+id/txtv_code"

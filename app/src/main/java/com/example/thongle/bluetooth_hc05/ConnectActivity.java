@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +22,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
+import com.example.thongle.bluetooth_hc05.utils.BlurBehind;
+import com.example.thongle.bluetooth_hc05.views.ProgressBarIndeterminateDeterminate;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -41,8 +46,8 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
     private FloatingActionButton floatingActionButton_add;
     private ArrayList<Effect> effects;
     private AdapterEffect adapter_effects;
-    private ProgressBar progressBar_connect;
-    private CoordinatorLayout coordinatorLayout_connect;
+    private ProgressBarIndeterminateDeterminate progressBar_connect;
+    private LinearLayout coordinatorLayout_connect;
     private Button button_reconnect;
     private Button button_clear;
 
@@ -50,15 +55,22 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
+//        BlurBehind.getInstance()
+//                .withAlpha(90)
+//                .withFilterColor(Color.parseColor("#FFFFFF"))
+//                .setBackground(this);
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
         recyclerView_effect = (RecyclerView) findViewById(R.id.recv_effect);
         toolbar_connect = (Toolbar) findViewById(R.id.toolbar_connect);
         floatingActionButton_add = (FloatingActionButton) findViewById(R.id.floatbtn_add);
-        progressBar_connect = (ProgressBar) findViewById(R.id.prog_toolbar_connect);
-        coordinatorLayout_connect = (CoordinatorLayout) findViewById(R.id.coordinator_layout_connect);
+        progressBar_connect = (ProgressBarIndeterminateDeterminate) findViewById(R.id.prog_toolbar_connect);
+        coordinatorLayout_connect = (LinearLayout) findViewById(R.id.coordinator_layout_connect);
         button_clear = (Button) findViewById(R.id.btn_clear);
         button_reconnect = (Button) findViewById(R.id.btn_reconnect);
+
+        setSupportActionBar(toolbar_connect);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         button_clear.setOnClickListener(this);
         button_reconnect.setOnClickListener(this);
@@ -91,6 +103,8 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
 
         adapter_effects = new AdapterEffect(effects, ConnectActivity.this, bluetooth, bluetoothDevice, recyclerView_effect);
         recyclerView_effect.setAdapter(adapter_effects);
+
+
     }
 
     @Override

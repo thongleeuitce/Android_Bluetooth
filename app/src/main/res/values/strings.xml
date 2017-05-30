@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Bluetooth_HC05</string>
-    <string name="button_search">Search</string>
+    <string name="app_name">Water Matrix</string>
+    <string name="button_search">Search Devices</string>
     <string name="textview_empty">Nothing here</string>
     <string name="searching_devices">Searching for devices...</string>
     <string name="error">Error</string>
