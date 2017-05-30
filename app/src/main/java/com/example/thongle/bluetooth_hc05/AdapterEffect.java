@@ -1,6 +1,9 @@
 package com.example.thongle.bluetooth_hc05;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothDevice;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,10 +20,14 @@ public class AdapterEffect extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private LayoutInflater mInflater;
     private ArrayList<Effect> items;
     private Activity mActivity;
+    private Bluetooth bluetooth;
+    private BluetoothDevice device;
 
-    public AdapterEffect(ArrayList<Effect> data, ConnectActivity activity) {
+    public AdapterEffect(ArrayList<Effect> data, ConnectActivity activity, Bluetooth bluetooth, BluetoothDevice device) {
         this.items = data;
         this.mActivity = activity;
+        this.bluetooth = bluetooth;
+        this.device = device;
         this.mInflater = LayoutInflater.from(mActivity);
     }
 
@@ -29,7 +36,7 @@ public class AdapterEffect extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void setInflater(LayoutInflater layoutInflater){
-        this.mInflater =layoutInflater;
+        this.mInflater = layoutInflater;
     }
 
     public void replaceItems(ArrayList<Effect> newItems) {
@@ -102,8 +109,37 @@ public class AdapterEffect extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         @Override
         public void onClick(View v) {
             final int pos = getAdapterPosition();
+            Effect effect = items.get(pos);
             if (pos >= 0) {
-                Toast.makeText(mActivity, "Selected Item Position "+pos, Toast.LENGTH_SHORT).show();
+                switch (bluetooth.getState()){
+                    case Bluetooth.STATE_CONNECTED:
+                        bluetooth.send(effect.getCode());
+                        Toast.makeText(mActivity, "Selected Item Position " + effect.getCode(), Toast.LENGTH_SHORT).show();
+                        break;
+                    case Bluetooth.STATE_CONNECTING:
+                        Snackbar.make(mActivity.findViewById(R.id.coordinator_layout_connect), "Connecting. Please waiting...", Snackbar.LENGTH_SHORT).show();
+                        break;
+                    case Bluetooth.STATE_ERROR:
+                        Snackbar.make(mActivity.findViewById(R.id.coordinator_layout_connect), "Connect error. Please Reconnect !", Snackbar.LENGTH_SHORT).setAction("Reconnect", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mActivity.findViewById(R.id.btn_reconnect).setEnabled(false);
+                                bluetooth.disconnect();
+                                bluetooth.connectToDevice(device);
+                            }
+                        }).show();
+                        break;
+                    case Bluetooth.STATE_NONE:
+                        Snackbar.make(mActivity.findViewById(R.id.coordinator_layout_connect), "You are not Connect, Please Connect", Snackbar.LENGTH_SHORT).setAction("Connect", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mActivity.findViewById(R.id.btn_reconnect).setEnabled(false);
+                                bluetooth.disconnect();
+                                bluetooth.connectToDevice(device);
+                            }
+                        }).show();
+                        break;
+                }
             }
         }
     }

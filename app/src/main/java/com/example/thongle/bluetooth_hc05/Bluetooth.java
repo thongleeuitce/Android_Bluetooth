@@ -8,6 +8,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,14 +25,31 @@ import java.util.UUID;
 /**
  * Created by Omar on 14/07/2015.
  */
-public class Bluetooth {
-    public static final int REQUEST_ENABLE_BLT = 1;
+public class Bluetooth{
+    public static final int REQUEST_ENABLE_BLT = 0;
+
+    public static final int MESSAGE_STATE_CHANGE = 1;
+    public static final int MESSAGE_READ = 2;
+    public static final int MESSAGE_WRITE = 3;
+    public static final int MESSAGE_SNACKBAR = 4;
+
+    public static final int STATE_NONE = 0;       // we're doing nothing
+    public static final int STATE_ERROR = 1;
+    public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
+    public static final int STATE_CONNECTED = 3;  // now connected to a remote device
+
+    public static final String SNACKBAR = "snackbar";
+
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothSocket socket;
     private BluetoothDevice device, devicePair;
     private BufferedReader input;
     private OutputStream out;
+
+    private int State;
+
+    private Handler myHandler;
 
     private boolean connected=false;
     private CommunicationCallback communicationCallback=null;
@@ -41,7 +62,12 @@ public class Bluetooth {
         this.activity=activity;
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
-
+    public Bluetooth(Activity activity, Handler handler){
+        this.State = STATE_NONE;
+        this.activity = activity;
+        this.myHandler = handler;
+        this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    }
     public DiscoveryCallback getDiscoveryCallback() {
         return discoveryCallback;
     }
@@ -73,10 +99,12 @@ public class Bluetooth {
         }
     }
 
-    public void connectToDevice(BluetoothDevice device){
-        new ConnectThread(device).start();
-    }
+    public synchronized void connectToDevice(BluetoothDevice device){
+        ConnectThread connectThread = new ConnectThread(device);
+        setState(STATE_CONNECTING);
 
+        connectThread.start();
+    }
     public void disconnect() {
         try {
             socket.close();
@@ -85,7 +113,6 @@ public class Bluetooth {
                 communicationCallback.onError(e.getMessage());
         }
     }
-
     public boolean isConnected(){
         return connected;
     }
@@ -118,7 +145,7 @@ public class Bluetooth {
 
     private class ConnectThread extends Thread {
         public ConnectThread(BluetoothDevice device) {
-            Bluetooth.this.device=device;
+            Bluetooth.this.device = device;
             try {
                 Bluetooth.this.socket = device.createRfcommSocketToServiceRecord(MY_UUID);
             } catch (IOException e) {
@@ -129,13 +156,12 @@ public class Bluetooth {
 
         public void run() {
             bluetoothAdapter.cancelDiscovery();
-
             try {
                 socket.connect();
                 out = socket.getOutputStream();
                 input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 connected=true;
-
+                setState(STATE_CONNECTED);
                 new ReceiveThread().start();
 
                 if(communicationCallback!=null)
@@ -150,6 +176,7 @@ public class Bluetooth {
                     if (communicationCallback != null)
                         communicationCallback.onError(closeException.getMessage());
                 }
+                connectionFailed();
             }
         }
     }
@@ -170,14 +197,7 @@ public class Bluetooth {
         return device;
     }
 
-    public Boolean scanDevices(BroadcastReceiver mReceiverScan){
-        IntentFilter filter = new IntentFilter();
-
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-
-        activity.registerReceiver(mReceiverScan, filter);
+    public Boolean scanDevices(){
         return bluetoothAdapter.startDiscovery();
 
     }
@@ -285,6 +305,27 @@ public class Bluetooth {
     public void removeDiscoveryCallback(){
         this.discoveryCallback=null;
     }
+    public void setMyHandler(Handler myHandler) {
+        this.myHandler = myHandler;
+    }
+    private void connectionFailed() {
+        // Send a failure item_message back to the Activity
+        Message msg = myHandler.obtainMessage(MESSAGE_SNACKBAR);
+        Bundle bundle = new Bundle();
+        bundle.putString(SNACKBAR, "Unable to connect");
+        msg.setData(bundle);
+        myHandler.sendMessage(msg);
+        setState(STATE_ERROR);
+    }
+    public int getState() {
+        return State;
+    }
+
+    public synchronized void setState(int state) {
+        this.State = state;
+        myHandler.obtainMessage(MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+    }
+
 
 }
 

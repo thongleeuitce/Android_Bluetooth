@@ -4,19 +4,27 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String EXTRA_DEVICE = "extra_device";
+    public static final String EXTRA_BLUETOOTH = "extra_ble";
 
     private Toolbar toolbar;
     private ProgressBar progressBar_toolbar;
@@ -50,13 +58,39 @@ public class MainActivity extends AppCompatActivity {
         button_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ConnectActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(MainActivity.this, ConnectActivity.class);
+//                startActivity(intent);
                 if(bluetooth.getBluetoothAdapter().isEnabled())
                     searchDevices();
                 else
                     toolbar.setSubtitle(getString(R.string.enabling_blt));
                     bluetooth.enableBluetooth();
+            }
+        });
+        listView_devices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                toolbar.setSubtitle(getString(R.string.asking_to_connect));
+                final BluetoothDevice device = bluetoothDevicesAdapter.getItem(position);
+
+                new AlertDialog.Builder(MainActivity.this)
+                        .setCancelable(false)
+                        .setTitle(getString(R.string.connect))
+                        .setMessage("Do you want to connect to: " + device.getName() + " - " + device.getAddress())
+                        .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialog, int which) {
+                                progressBar_toolbar.setVisibility(View.INVISIBLE);
+                                bluetooth.getBluetoothAdapter().cancelDiscovery();
+                                Intent intent = new Intent(MainActivity.this, ConnectActivity.class);
+                                intent.putExtra(EXTRA_DEVICE, device);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialog, int which) {
+                                toolbar.setSubtitle("Cancelled connection");
+                            }
+                        }).show();
             }
         });
     }
@@ -80,8 +114,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter();
+
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+
+        registerReceiver(mReceiverScan, filter);
+    }
+
     private void searchDevices(){
-        if (bluetooth.scanDevices(mReceiverScan)){
+        if (bluetooth.scanDevices()){
             progressBar_toolbar.setVisibility(View.VISIBLE);
             toolbar.setSubtitle(getString(R.string.searching_devices));
         }
