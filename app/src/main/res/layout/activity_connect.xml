@@ -17,6 +17,13 @@
         app:titleTextColor="@color/white"
         app:subtitleTextColor="@color/white"
         android:background="#3fffffff">
+        <com.example.thongle.bluetooth_hc05.views.ToggleButton
+            android:id="@+id/tog_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_gravity="end"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            />
         </android.support.v7.widget.Toolbar>
     <com.example.thongle.bluetooth_hc05.views.ProgressBarIndeterminateDeterminate
         android:id="@+id/prog_toolbar_connect"

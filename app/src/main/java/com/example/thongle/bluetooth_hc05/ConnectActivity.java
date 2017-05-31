@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 
 import com.example.thongle.bluetooth_hc05.utils.BlurBuilder;
 import com.example.thongle.bluetooth_hc05.views.ProgressBarIndeterminateDeterminate;
+import com.example.thongle.bluetooth_hc05.views.ToggleButton;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
     private LinearLayout coordinatorLayout_connect;
     private Button button_reconnect;
     private Button button_clear;
+    private ToggleButton toggleButton_connect;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -61,7 +63,7 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         Drawable wallpaperDrawable = wallpaperManager.getDrawable();
         Bitmap bm = ((BitmapDrawable) wallpaperDrawable).getBitmap();
-        Bitmap blur_bitmap = BlurBuilder.blur(this, bm);
+        final Bitmap blur_bitmap = BlurBuilder.blur(this, bm);
         this.getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), blur_bitmap));
 //        BlurBehind.getInstance()
 //                .withAlpha(90)
@@ -75,13 +77,13 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
         coordinatorLayout_connect = (LinearLayout) findViewById(R.id.coordinator_layout_connect);
         button_clear = (Button) findViewById(R.id.btn_clear);
         button_reconnect = (Button) findViewById(R.id.btn_reconnect);
+        toggleButton_connect = (ToggleButton) findViewById(R.id.tog_connect);
 
         setSupportActionBar(toolbar_connect);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         button_clear.setOnClickListener(this);
         button_reconnect.setOnClickListener(this);
-
 
         snackbar_TurnOn = Snackbar.make(coordinatorLayout_connect, "Bluetooth turned off", Snackbar.LENGTH_INDEFINITE)
                 .setAction("Turn On", new View.OnClickListener() {
@@ -94,6 +96,11 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
         bluetooth = new Bluetooth(this, handler);
         bluetoothDevice = getIntent().getExtras().getParcelable(MainActivity.EXTRA_DEVICE);
         bluetooth.connectToDevice(bluetoothDevice);
+
+        if (bluetooth.getBluetoothAdapter().isEnabled())
+            toggleButton_connect.setToggleOn();
+        else
+            toggleButton_connect.setToggleOff();
 
         effects = new ArrayList<>();
         recyclerView_effect.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
@@ -111,7 +118,17 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
         adapter_effects = new AdapterEffect(effects, ConnectActivity.this, bluetooth, bluetoothDevice, recyclerView_effect);
         recyclerView_effect.setAdapter(adapter_effects);
 
-
+        toggleButton_connect.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
+            @Override
+            public void onToggle(boolean on) {
+                if(on)
+                    bluetooth.enableBluetooth();
+                else{
+                    bluetooth.disableBluetooth();
+                    toolbar_connect.setSubtitle("Bluetooth turned off");
+                }
+            }
+        });
     }
 
     @Override
@@ -171,9 +188,11 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Bluetooth.REQUEST_ENABLE_BLT) {
             if (resultCode == RESULT_OK) {
+                toggleButton_connect.setToggleOn();
                 toolbar_connect.setSubtitle("None");
                 reconnect();
             } else {
+                toggleButton_connect.setToggleOff();
                 toolbar_connect.setSubtitle("Error");
                 Snackbar.make(coordinatorLayout_connect, getString(R.string.failed_to_enable_bluetooth), Snackbar.LENGTH_INDEFINITE)
                         .setAction(getString(R.string.try_again), new View.OnClickListener() {
