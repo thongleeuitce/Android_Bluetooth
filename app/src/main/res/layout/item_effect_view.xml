@@ -4,6 +4,7 @@
     android:id="@+id/cardView_effect"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="#3fffffff"
     card_view:cardUseCompatPadding="true">
 
     <RelativeLayout

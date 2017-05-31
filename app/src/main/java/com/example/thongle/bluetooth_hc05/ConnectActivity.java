@@ -1,19 +1,21 @@
 package com.example.thongle.bluetooth_hc05;
 
+import android.app.WallpaperManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,9 +25,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
-import com.example.thongle.bluetooth_hc05.utils.BlurBehind;
+import com.example.thongle.bluetooth_hc05.utils.BlurBuilder;
 import com.example.thongle.bluetooth_hc05.views.ProgressBarIndeterminateDeterminate;
 
 import java.lang.ref.WeakReference;
@@ -51,10 +52,17 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
     private Button button_reconnect;
     private Button button_clear;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
+
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+        Bitmap bm = ((BitmapDrawable) wallpaperDrawable).getBitmap();
+        Bitmap blur_bitmap = BlurBuilder.blur(this, bm);
+        this.getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), blur_bitmap));
 //        BlurBehind.getInstance()
 //                .withAlpha(90)
 //                .withFilterColor(Color.parseColor("#FFFFFF"))
@@ -63,7 +71,6 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
 
         recyclerView_effect = (RecyclerView) findViewById(R.id.recv_effect);
         toolbar_connect = (Toolbar) findViewById(R.id.toolbar_connect);
-        floatingActionButton_add = (FloatingActionButton) findViewById(R.id.floatbtn_add);
         progressBar_connect = (ProgressBarIndeterminateDeterminate) findViewById(R.id.prog_toolbar_connect);
         coordinatorLayout_connect = (LinearLayout) findViewById(R.id.coordinator_layout_connect);
         button_clear = (Button) findViewById(R.id.btn_clear);
@@ -192,7 +199,7 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
                         case Bluetooth.STATE_CONNECTED:
                             activity.toolbar_connect.setSubtitle("Connected");
                             activity.button_reconnect.setEnabled(false);
-                            activity.progressBar_connect.setVisibility(View.GONE);
+                            activity.progressBar_connect.setVisibility(View.INVISIBLE);
                             break;
                         case Bluetooth.STATE_CONNECTING:
                             activity.toolbar_connect.setSubtitle("Connecting");
@@ -200,12 +207,12 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
                             break;
                         case Bluetooth.STATE_NONE:
                             activity.toolbar_connect.setSubtitle("Not Connected");
-                            activity.progressBar_connect.setVisibility(View.GONE);
+                            activity.progressBar_connect.setVisibility(View.INVISIBLE);
                             break;
                         case Bluetooth.STATE_ERROR:
                             activity.toolbar_connect.setSubtitle("Error");
                             activity.button_reconnect.setEnabled(true);
-                            activity.progressBar_connect.setVisibility(View.GONE);
+                            activity.progressBar_connect.setVisibility(View.INVISIBLE);
                             break;
                     }
                     break;

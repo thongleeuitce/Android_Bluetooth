@@ -9,11 +9,14 @@
     android:id="@+id/coordinator_layout_connect"
     android:orientation="vertical"
     tools:context=".ConnectActivity">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_connect"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary">
+        app:titleTextColor="@color/white"
+        app:subtitleTextColor="@color/white"
+        android:background="#3fffffff">
         </android.support.v7.widget.Toolbar>
     <com.example.thongle.bluetooth_hc05.views.ProgressBarIndeterminateDeterminate
         android:id="@+id/prog_toolbar_connect"
@@ -21,28 +24,29 @@
         android:layout_height="wrap_content"
         android:visibility="invisible">
     </com.example.thongle.bluetooth_hc05.views.ProgressBarIndeterminateDeterminate>
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <LinearLayout
             android:id="@+id/linear_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true">
+            android:layout_height="wrap_content">
             <Button
+                android:background="#3fffffff"
                 android:id="@+id/btn_reconnect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/white"
                 android:layout_weight="1"
                 android:enabled="false"
                 android:text="@string/reconnect" />
 
             <Button
+                android:background="#3fffffff"
                 android:id="@+id/btn_clear"
+                android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -51,17 +55,13 @@
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="@dimen/margin_4"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:id="@+id/recv_effect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/linear_button">
         </android.support.v7.widget.RecyclerView>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/floatbtn_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true" />
-    </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>

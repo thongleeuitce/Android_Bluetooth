@@ -18,7 +18,7 @@ public class ProgressBarDeterminate extends CustomView {
 	int min = 0;
 	int progress = 0;
 	
-	int backgroundColor = Color.parseColor("#1E88E5");
+	int backgroundColor = Color.parseColor("#4ebb7f");
 	
 	View progressView;
 
@@ -47,7 +47,7 @@ public class ProgressBarDeterminate extends CustomView {
 				if (background != -1)
 					setBackgroundColor(background);
 				else
-					setBackgroundColor(Color.parseColor("#1E88E5"));
+					setBackgroundColor(Color.parseColor("#4ebb7f"));
 			}
 			
 			min = attrs.getAttributeIntValue(MATERIALDESIGNXML,"min", 0);

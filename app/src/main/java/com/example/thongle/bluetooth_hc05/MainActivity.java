@@ -1,5 +1,6 @@
 package com.example.thongle.bluetooth_hc05;
 
+import android.app.WallpaperManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -7,7 +8,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Parcelable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -23,7 +31,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.thongle.bluetooth_hc05.utils.BlurBuilder;
 import com.example.thongle.bluetooth_hc05.views.ProgressBarDeterminate;
+import com.example.thongle.bluetooth_hc05.views.ToggleButton;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_DEVICE = "extra_device";
@@ -36,13 +46,21 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView_empty_devices;
     private LinearLayout coordinatorLayout;
     private BluetoothDevicesAdapter bluetoothDevicesAdapter;
+    private ToggleButton toggleButton;
 
     private Bluetooth bluetooth;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+        Bitmap bm = ((BitmapDrawable) wallpaperDrawable).getBitmap();
+        Bitmap blur_bitmap = BlurBuilder.blur(this, bm);
+        this.getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), blur_bitmap));
 
         coordinatorLayout = (LinearLayout) findViewById(R.id.coordinator_layout_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -50,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         button_search = (Button) findViewById(R.id.btn_search);
         listView_devices = (ListView) findViewById(R.id.liv_devices);
         textView_empty_devices = (TextView) findViewById(R.id.txtv_nothing);
+        toggleButton = (ToggleButton) findViewById(R.id.tog_main);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -61,16 +80,26 @@ public class MainActivity extends AppCompatActivity {
         listView_devices.setAdapter(bluetoothDevicesAdapter);
         listView_devices.setEmptyView(textView_empty_devices);
 
+        if (!bluetooth.getBluetoothAdapter().isEnabled())
+            toggleButton.setToggleOff();
+        else
+            toggleButton.setToggleOn();
+
         button_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                Intent intent = new Intent(MainActivity.this, ConnectActivity.class);
 //                startActivity(intent);
-                if(bluetooth.getBluetoothAdapter().isEnabled())
+                if(bluetooth.getBluetoothAdapter().isEnabled()) {
                     searchDevices();
-                else
+                    button_search.setEnabled(false);
+                }
+                else{
                     toolbar.setSubtitle(getString(R.string.enabling_blt));
                     bluetooth.enableBluetooth();
+                    toggleButton.setToggleOff();
+                }
+
             }
         });
         listView_devices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -78,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 toolbar.setSubtitle(getString(R.string.asking_to_connect));
                 final BluetoothDevice device = bluetoothDevicesAdapter.getItem(position);
-
                 new AlertDialog.Builder(MainActivity.this)
                         .setCancelable(false)
                         .setTitle(getString(R.string.connect))
@@ -99,6 +127,20 @@ public class MainActivity extends AppCompatActivity {
                         }).show();
             }
         });
+        toggleButton.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
+            @Override
+            public void onToggle(boolean on) {
+                if(on){
+                    bluetooth.enableBluetooth();
+                    toolbar.setSubtitle("Bluetooth turned on");
+                }
+                else{
+                    bluetooth.disableBluetooth();
+                    progressBar_toolbar.setVisibility(View.INVISIBLE);
+                    toolbar.setSubtitle("Bluetooth turned off");
+                }
+            }
+        });
     }
 
     @Override
@@ -106,9 +148,10 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == bluetooth.REQUEST_ENABLE_BLT) {
             if (resultCode == RESULT_OK) {
-                searchDevices();
+                toggleButton.setToggleOn();
             } else {
                 toolbar.setSubtitle(getString(R.string.error));
+                toggleButton.setToggleOff();
                 Snackbar.make(coordinatorLayout, getString(R.string.failed_to_enable_bluetooth), Snackbar.LENGTH_INDEFINITE)
                         .setAction(getString(R.string.try_again), new View.OnClickListener() {
                             @Override
@@ -166,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
                     context.unregisterReceiver(mReceiverScan);
                     progressBar_toolbar.setVisibility(View.INVISIBLE);
                     toolbar.setSubtitle(getString(R.string.none));
+                    button_search.setEnabled(true);
                     if (bluetooth.getDiscoveryCallback() != null)
                         bluetooth.getDiscoveryCallback().onFinish();
                     break;

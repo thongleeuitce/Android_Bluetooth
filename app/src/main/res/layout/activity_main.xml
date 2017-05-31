@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:id="@+id/coordinator_layout_main"
     tools:context=".MainActivity"
@@ -13,8 +13,16 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary" >
-
+        android:background="#3fffffff"
+        app:titleTextColor="#ffffff"
+        app:subtitleTextColor="#ffffff">
+        <com.example.thongle.bluetooth_hc05.views.ToggleButton
+            android:id="@+id/tog_main"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_gravity="end"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            />
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
@@ -33,7 +41,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btn_search"
-            android:text="@string/button_search"/>
+            android:textColor="@color/white"
+            android:text="@string/button_search"
+            android:background="#3fffffff"/>
 
         <ListView
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
