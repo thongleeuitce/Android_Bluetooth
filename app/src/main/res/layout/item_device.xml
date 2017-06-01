@@ -1,42 +1,29 @@
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:orientation="vertical">-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/txtv_device_name"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"/>-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/txtxv_device_address"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content" />-->
-<!--</LinearLayout>-->
-<android.support.v7.widget.CardView
+<com.example.thongle.bluetooth_hc05.views.RoundRelativeLayout
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/cardView"
+    xmlns:rv="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardBackgroundColor="#3fffffff"
-    card_view:cardElevation="0dp"
-    card_view:cardUseCompatPadding="true">
+    rv:rv_backgroundColor="#3fffffff"
+    rv:rv_isRadiusHalfHeight="true">
     <LinearLayout
-        android:paddingLeft="@dimen/activity_horizontal_margin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
         <TextView
-        android:id="@+id/txtv_device_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"/>
-
+            android:id="@+id/txtv_device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:textSize="20sp"/>
         <TextView
-        android:id="@+id/txtxv_device_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            android:layout_weight="1"
+            android:id="@+id/txtxv_device_address"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
-</android.support.v7.widget.CardView>
+</com.example.thongle.bluetooth_hc05.views.RoundRelativeLayout>
