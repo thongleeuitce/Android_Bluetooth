@@ -9,31 +9,29 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.thongle.bluetooth_hc05.Adapters.BluetoothDevicesAdapter;
+import com.example.thongle.bluetooth_hc05.Models.Bluetooth;
 import com.example.thongle.bluetooth_hc05.utils.BlurBuilder;
 import com.example.thongle.bluetooth_hc05.views.ProgressBarDeterminate;
 import com.example.thongle.bluetooth_hc05.views.ToggleButton;
+
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_DEVICE = "extra_device";
@@ -70,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         textView_empty_devices = (TextView) findViewById(R.id.txtv_nothing);
         toggleButton = (ToggleButton) findViewById(R.id.tog_main);
 
+        Date date = new Date();
+        date.toString();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
@@ -161,6 +161,16 @@ public class MainActivity extends AppCompatActivity {
                         }).show();
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!bluetooth.getBluetoothAdapter().isEnabled())
+            toggleButton.setToggleOff();
+        else
+            toggleButton.setToggleOn();
+
     }
 
     @Override

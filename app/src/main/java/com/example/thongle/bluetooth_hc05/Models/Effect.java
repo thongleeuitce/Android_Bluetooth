@@ -1,4 +1,4 @@
-package com.example.thongle.bluetooth_hc05;
+package com.example.thongle.bluetooth_hc05.Models;
 
 import android.media.Image;
 

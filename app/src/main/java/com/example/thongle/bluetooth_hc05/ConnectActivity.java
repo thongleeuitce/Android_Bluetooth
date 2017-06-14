@@ -26,6 +26,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.example.thongle.bluetooth_hc05.Adapters.AdapterEffect;
+import com.example.thongle.bluetooth_hc05.Models.Bluetooth;
+import com.example.thongle.bluetooth_hc05.Models.Effect;
 import com.example.thongle.bluetooth_hc05.utils.BlurBuilder;
 import com.example.thongle.bluetooth_hc05.views.ProgressBarIndeterminateDeterminate;
 import com.example.thongle.bluetooth_hc05.views.ToggleButton;
@@ -95,6 +98,7 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
         handler = new myHandler(ConnectActivity.this);
         bluetooth = new Bluetooth(this, handler);
         bluetoothDevice = getIntent().getExtras().getParcelable(MainActivity.EXTRA_DEVICE);
+        setTitle(bluetoothDevice.getName());
         bluetooth.connectToDevice(bluetoothDevice);
 
         if (bluetooth.getBluetoothAdapter().isEnabled())
@@ -104,16 +108,16 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
 
         effects = new ArrayList<>();
         recyclerView_effect.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
-        effects.add(new Effect("effect 1", "0", "com", R.drawable.logo));
-        effects.add(new Effect("effect 2", "1", "hu tieu", R.drawable.logo));
-        effects.add(new Effect("effect 3", "2", "bo kho", R.drawable.logo));
-        effects.add(new Effect("effect 4", "3", "sinh to", R.drawable.logo));
-        effects.add(new Effect("effect 5", "4", "tra sua", R.drawable.logo));
-        effects.add(new Effect("effect 6", "5", "Banh xeo", R.drawable.logo));
-        effects.add(new Effect("effect 7", "6", "Diem Diem", R.drawable.logo));
-        effects.add(new Effect("effect 8", "7", "Tieu chen", R.drawable.logo));
-        effects.add(new Effect("effect 9", "8", "Tieu to", R.drawable.logo));
-        effects.add(new Effect("effect 10", "9", "mi cay", R.drawable.logo));
+        effects.add(new Effect("Effect 1", "0", "Describe effect 1", R.drawable.logo));
+        effects.add(new Effect("Effect 2", "1", "Describe effect 2", R.drawable.logo));
+        effects.add(new Effect("Effect 3", "2", "Describe effect 3", R.drawable.logo));
+        effects.add(new Effect("Effect 4", "3", "Describe effect 4", R.drawable.logo));
+        effects.add(new Effect("Effect 5", "4", "Describe effect 5", R.drawable.logo));
+        effects.add(new Effect("Effect 6", "5", "Describe effect 6", R.drawable.logo));
+        effects.add(new Effect("Effect 7", "6", "Describe effect 7", R.drawable.logo));
+        effects.add(new Effect("Effect 8", "7", "Describe effect 8", R.drawable.logo));
+        effects.add(new Effect("Effect 9", "8", "Describe effect 9", R.drawable.logo));
+        effects.add(new Effect("Effect 10", "9", "Describe effect 10", R.drawable.logo));
 
         adapter_effects = new AdapterEffect(effects, ConnectActivity.this, bluetooth, bluetoothDevice, recyclerView_effect);
         recyclerView_effect.setAdapter(adapter_effects);
@@ -129,6 +133,11 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
                 }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override

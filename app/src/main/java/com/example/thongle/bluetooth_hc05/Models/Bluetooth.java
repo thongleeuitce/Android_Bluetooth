@@ -1,4 +1,4 @@
-package com.example.thongle.bluetooth_hc05;
+package com.example.thongle.bluetooth_hc05.Models;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
