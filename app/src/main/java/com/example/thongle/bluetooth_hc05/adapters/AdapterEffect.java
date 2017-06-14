@@ -1,4 +1,4 @@
-package com.example.thongle.bluetooth_hc05.Adapters;
+package com.example.thongle.bluetooth_hc05.adapters;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
@@ -12,10 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.thongle.bluetooth_hc05.Animations.RecyclerViewAnimator;
+import com.example.thongle.bluetooth_hc05.animations.RecyclerViewAnimator;
 import com.example.thongle.bluetooth_hc05.ConnectActivity;
-import com.example.thongle.bluetooth_hc05.Models.Bluetooth;
-import com.example.thongle.bluetooth_hc05.Models.Effect;
+import com.example.thongle.bluetooth_hc05.models.Bluetooth;
+import com.example.thongle.bluetooth_hc05.models.Effect;
 import com.example.thongle.bluetooth_hc05.R;
 
 import java.util.ArrayList;

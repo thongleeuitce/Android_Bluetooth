@@ -1,6 +1,4 @@
-package com.example.thongle.bluetooth_hc05.Models;
-
-import android.media.Image;
+package com.example.thongle.bluetooth_hc05.models;
 
 /**
  * Created by thongle on 25/05/2017.

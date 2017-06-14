@@ -25,8 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.thongle.bluetooth_hc05.Adapters.BluetoothDevicesAdapter;
-import com.example.thongle.bluetooth_hc05.Models.Bluetooth;
+import com.example.thongle.bluetooth_hc05.adapters.BluetoothDevicesAdapter;
+import com.example.thongle.bluetooth_hc05.models.Bluetooth;
 import com.example.thongle.bluetooth_hc05.utils.BlurBuilder;
 import com.example.thongle.bluetooth_hc05.views.ProgressBarDeterminate;
 import com.example.thongle.bluetooth_hc05.views.ToggleButton;

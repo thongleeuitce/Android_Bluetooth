@@ -1,4 +1,4 @@
-package com.example.thongle.bluetooth_hc05.Animations;
+package com.example.thongle.bluetooth_hc05.animations;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

@@ -1,4 +1,4 @@
-package com.example.thongle.bluetooth_hc05.Models;
+package com.example.thongle.bluetooth_hc05.models;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
